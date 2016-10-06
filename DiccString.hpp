@@ -91,6 +91,8 @@ class DiccString {
 
                 Nodo* raiz;
                 Conj<string> claves;
+
+                const int cantSiguientes (const Nodo &nodo) const;
 };
 
 
@@ -107,7 +109,7 @@ DiccString<T>::DiccString(const DiccString& d) {
 
 template <typename T>
 DiccString<T>::~DiccString(){
-
+    delete raiz;
 }
 
 
@@ -142,18 +144,26 @@ void DiccString<T>::Definir(const string& clave, const T& significado){
 
 template <typename T>
 bool DiccString<T>::Definido(const string& clave) const{
-
+    return claves.pertenece(clave);
 }
 
 template <typename T>
 T& DiccString<T>::Obtener(const string& clave) {
-
+    Nodo* actual = raiz;
+    for (int i = 0; i < clave.length(); ++i) {
+        actual = actual->siguientes[(int)clave[i]];
+    }
+    return *(actual->definicion);
 }
 
 
 template <typename T>
 const T& DiccString<T>::Obtener(const string& clave) const {
-
+//    Nodo* actual = raiz;
+//    for (int i = 0; i < clave.length(); ++i) {
+//        actual = actual->siguientes[(int)clave[i]];
+//    }
+//    return *(actual->definicion);
 }
 
 
@@ -165,7 +175,44 @@ const Conj<string>& DiccString<T>::Claves() const{
 
 template <typename T>
 void DiccString<T>::Borrar(const string& clave) {
+    if (raiz == NULL) return;
 
+    // Busco la ultima bifurcacion y su indice en la clave
+    Nodo *actual = raiz, *ultimaBifurcacion = raiz;
+    int indiceBifurcacion = 0;
+    for(int i = 0; i < clave.length(); ++i) {
+        actual = actual->siguientes[(int)clave[i]];
+        if (cantSiguientes(*actual) > 1) {
+            ultimaBifurcacion = actual;
+            indiceBifurcacion = i;
+        }
+    }
+
+    // Elimino todos los nodos a partir de la ultima bifurcacion
+    if ( (indiceBifurcacion < clave.length()) && (cantSiguientes(*actual) == 0) ) {
+        // La clave a borrar no es un prefijo de otra clave
+        if ( (ultimaBifurcacion == raiz) && (raiz->definicion == NULL) && (claves.cardinal() == 1) ) {
+            // Es la unica clave entonces borro la raiz tambien
+            delete ultimaBifurcacion;
+            ultimaBifurcacion = NULL;
+        } else {
+            // Borro a partir de la ultima bifurcacion
+            delete ultimaBifurcacion->siguientes[(int)clave[indiceBifurcacion+1]];
+            ultimaBifurcacion->siguientes[(int)clave[indiceBifurcacion+1]] = NULL;
+        }
+    }
+    actual->definicion = NULL;
+    claves.remover(clave);
+}
+
+template <typename T>
+
+const int DiccString<T>::cantSiguientes(const typename DiccString<T>::Nodo &nodo) const {
+    int cantSiguientes = 0;
+    for(int i = 0; i < 256; ++i) {
+        if (nodo.siguientes[i] != NULL) ++cantSiguientes;
+    }
+    return cantSiguientes;
 }
 
 
