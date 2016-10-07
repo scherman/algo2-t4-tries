@@ -192,9 +192,9 @@ void DiccString<T>::Borrar(const string& clave) {
     if ( (indiceBifurcacion < clave.length()) && (cantSiguientes(*actual) == 0) ) {
         // La clave a borrar no es un prefijo de otra clave
         if ( (ultimaBifurcacion == raiz) && (raiz->definicion == NULL) && (claves.cardinal() == 1) ) {
-            // Es la unica clave entonces borro la raiz tambien
-            delete ultimaBifurcacion;
-            ultimaBifurcacion = NULL;
+            // Es la unica clave entonces borro a partir de la raiz
+            delete raiz;
+            raiz = NULL;
         } else {
             // Borro a partir de la ultima bifurcacion
             delete ultimaBifurcacion->siguientes[(int)clave[indiceBifurcacion+1]];
