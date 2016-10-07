@@ -10,6 +10,27 @@ void test_claves_dicc_vacio() {
 	ASSERT(d.Claves().cardinal() == 0);
 }
 
+void test_constructor_copia() {
+    DiccString<int> d;
+    d.Definir("",15);
+    d.Definir("casa",20);
+    d.Definir("casita",25);
+    d.Definir("casacha",30);
+
+    DiccString<int> c (d);
+
+    ASSERT(d.Definido(""));
+    ASSERT(d.Obtener("") == 15);
+
+    ASSERT(d.Definido("casa"));
+    ASSERT(d.Obtener("casa") == 20);
+
+    ASSERT(d.Definido("casita"));
+    ASSERT(d.Obtener("casita") == 25);
+
+    ASSERT(d.Definido("casacha"));
+    ASSERT(d.Obtener("casacha") == 30);
+}
 
 //Chequea el definir y definido
 void test_definir_definido() {
@@ -18,20 +39,30 @@ void test_definir_definido() {
 	ASSERT( d.Definido("hola") );
 	ASSERT( !d.Definido("casona") );
  	ASSERT( !d.Definido("casa") );
+    ASSERT( !d.Definido("h") );
+
+    d.Definir("h",14);
+    ASSERT( d.Definido("hola") );
+    ASSERT( d.Definido("h") );
+    ASSERT( !d.Definido("casona") );
+    ASSERT( !d.Definido("casa") );
 
 	d.Definir("casona",13);
 	ASSERT( d.Definido("hola") );
+    ASSERT( d.Definido("h") );
 	ASSERT( d.Definido("casona") );
   	ASSERT( !d.Definido("casa") );
 
   	d.Definir("casa",6);
 	ASSERT( d.Definido("hola") );
+    ASSERT( d.Definido("h") );
 	ASSERT( d.Definido("casona") );
   	ASSERT( d.Definido("casa") );
 
     d.Definir("", 2);
     ASSERT( d.Definido("") );
     ASSERT( d.Definido("hola") );
+    ASSERT( d.Definido("h") );
     ASSERT( d.Definido("casona") );
     ASSERT( d.Definido("casa") );
 }
@@ -131,13 +162,17 @@ void test_claves() {
 
 
 int main() {
+
 	RUN_TEST(test_claves_dicc_vacio);
+    RUN_TEST(test_constructor_copia);
 	RUN_TEST(test_definir_definido);
 	RUN_TEST(test_obtener);
 	RUN_TEST(test_borrar);
 	RUN_TEST(test_claves);
 	//Realizar más test para chequear el funcionamiento del diccionario sobre trie.
-	
+
 	return 0;
 
 }
+
+

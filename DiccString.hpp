@@ -75,14 +75,29 @@ class DiccString {
                     Nodo** siguientes;
                     T* definicion;
                     Nodo(){
+//                        std::cout << "Nodo creado " << this << std::endl;
 						siguientes = new Nodo*[256];
                         for (int i = 0; i < 256; i++){
                             siguientes[i] = NULL;
                         }
                         definicion = NULL;
                     }
+
+                    Nodo(const Nodo &n) {
+//                        std::cout << "Nodo creado por copia" << this << std::endl;
+                        definicion =  n.definicion == NULL ? NULL : new T(*n.definicion);
+                        siguientes = new Nodo*[256];
+                        for (int i = 0; i < 256; i++){
+                            siguientes[i] = n.siguientes[i] == NULL ? NULL : new Nodo(*n.siguientes[i]);
+                        }
+                    }
+
                     ~Nodo(){
+//                        std::cout << "Nodo borrado " << this << std::endl;
                         delete definicion;
+                        for (int i = 0; i < 256; ++i){
+                            delete siguientes[i];
+                        }
 						delete [] siguientes;
                     }
                 };
@@ -104,7 +119,7 @@ DiccString<T>::DiccString()
 
 template <typename T>
 DiccString<T>::DiccString(const DiccString& d) {
-
+    if (d.raiz != NULL) raiz = new Nodo(*d.raiz);
 }
 
 template <typename T>
@@ -119,12 +134,12 @@ void DiccString<T>::Definir(const string& clave, const T& significado){
 
     // Recorro hasta que se bifurca
     Nodo* actual = raiz;
-    bool bifurco = false;
+    bool encontreBifurcacion = false;
     int i = 0;
-    while (i < clave.length() && !bifurco) {
+    while (i < clave.length() && !encontreBifurcacion) {
         if (actual->siguientes[(int)clave[i]] == NULL) {
             actual->siguientes[(int)clave[i]] = new Nodo();
-            bifurco = true;
+            encontreBifurcacion = true;
         }
         actual = actual->siguientes[(int)clave[i]];
         ++i;
@@ -159,11 +174,11 @@ T& DiccString<T>::Obtener(const string& clave) {
 
 template <typename T>
 const T& DiccString<T>::Obtener(const string& clave) const {
-//    Nodo* actual = raiz;
-//    for (int i = 0; i < clave.length(); ++i) {
-//        actual = actual->siguientes[(int)clave[i]];
-//    }
-//    return *(actual->definicion);
+    Nodo* actual = raiz;
+    for (int i = 0; i < clave.length(); ++i) {
+        actual = actual->siguientes[(int)clave[i]];
+    }
+    return *(actual->definicion);
 }
 
 
@@ -191,7 +206,7 @@ void DiccString<T>::Borrar(const string& clave) {
     // Elimino todos los nodos a partir de la ultima bifurcacion
     if ( (indiceBifurcacion < clave.length()) && (cantSiguientes(*actual) == 0) ) {
         // La clave a borrar no es un prefijo de otra clave
-        if ( (ultimaBifurcacion == raiz) && (raiz->definicion == NULL) && (claves.cardinal() == 1) ) {
+        if ( (ultimaBifurcacion == raiz) && (claves.cardinal() == 1) ) {
             // Es la unica clave entonces borro a partir de la raiz
             delete raiz;
             raiz = NULL;
@@ -206,7 +221,6 @@ void DiccString<T>::Borrar(const string& clave) {
 }
 
 template <typename T>
-
 const int DiccString<T>::cantSiguientes(const typename DiccString<T>::Nodo &nodo) const {
     int cantSiguientes = 0;
     for(int i = 0; i < 256; ++i) {
