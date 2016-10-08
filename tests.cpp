@@ -162,7 +162,6 @@ void test_claves() {
 
 
 int main() {
-
 	RUN_TEST(test_claves_dicc_vacio);
     RUN_TEST(test_constructor_copia);
 	RUN_TEST(test_definir_definido);

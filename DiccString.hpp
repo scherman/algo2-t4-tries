@@ -75,25 +75,25 @@ class DiccString {
                     Nodo** siguientes;
                     T* definicion;
                     Nodo(){
-//                        std::cout << "Nodo creado " << this << std::endl;
+                        std::cout << "Nodo creado " << this << std::endl;
 						siguientes = new Nodo*[256];
-                        for (int i = 0; i < 256; i++){
+                        for (int i = 0; i < 256; ++i){
                             siguientes[i] = NULL;
                         }
                         definicion = NULL;
                     }
 
                     Nodo(const Nodo &n) {
-//                        std::cout << "Nodo creado por copia" << this << std::endl;
+                        std::cout << "Nodo creado por copia " << this << std::endl;
                         definicion =  n.definicion == NULL ? NULL : new T(*n.definicion);
                         siguientes = new Nodo*[256];
-                        for (int i = 0; i < 256; i++){
+                        for (int i = 0; i < 256; ++i){
                             siguientes[i] = n.siguientes[i] == NULL ? NULL : new Nodo(*n.siguientes[i]);
                         }
                     }
 
                     ~Nodo(){
-//                        std::cout << "Nodo borrado " << this << std::endl;
+                        std::cout << "Nodo borrado " << this << std::endl;
                         delete definicion;
                         for (int i = 0; i < 256; ++i){
                             delete siguientes[i];
@@ -204,10 +204,10 @@ void DiccString<T>::Borrar(const string& clave) {
     }
 
     // Elimino todos los nodos a partir de la ultima bifurcacion
-    if ( (indiceBifurcacion < clave.length()) && (cantSiguientes(*actual) == 0) ) {
+    if (cantSiguientes(*actual) == 0) {
         // La clave a borrar no es un prefijo de otra clave
-        if ( (ultimaBifurcacion == raiz) && (claves.cardinal() == 1) ) {
-            // Es la unica clave entonces borro a partir de la raiz
+        if (claves.cardinal() == 1) {
+            // Era la unica clave entonces borro a partir de la raiz
             delete raiz;
             raiz = NULL;
         } else {
@@ -215,9 +215,14 @@ void DiccString<T>::Borrar(const string& clave) {
             delete ultimaBifurcacion->siguientes[(int)clave[indiceBifurcacion+1]];
             ultimaBifurcacion->siguientes[(int)clave[indiceBifurcacion+1]] = NULL;
         }
+    } else {
+        // No tengo que borrar nodos. Solo borro la definicion
+        delete actual->definicion;
+        actual->definicion = NULL;
     }
-    actual->definicion = NULL;
+
     claves.remover(clave);
+
 }
 
 template <typename T>
