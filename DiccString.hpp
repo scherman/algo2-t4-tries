@@ -75,7 +75,7 @@ class DiccString {
                     Nodo** siguientes;
                     T* definicion;
                     Nodo(){
-                        std::cout << "Nodo creado " << this << std::endl;
+//                        std::cout << "Nodo creado " << this << std::endl;
 						siguientes = new Nodo*[256];
                         for (int i = 0; i < 256; ++i){
                             siguientes[i] = NULL;
@@ -84,7 +84,7 @@ class DiccString {
                     }
 
                     Nodo(const Nodo &n) {
-                        std::cout << "Nodo creado por copia " << this << std::endl;
+//                        std::cout << "Nodo creado por copia " << this << std::endl;
                         definicion =  n.definicion == NULL ? NULL : new T(*n.definicion);
                         siguientes = new Nodo*[256];
                         for (int i = 0; i < 256; ++i){
@@ -93,7 +93,7 @@ class DiccString {
                     }
 
                     ~Nodo(){
-                        std::cout << "Nodo borrado " << this << std::endl;
+//                        std::cout << "Nodo borrado " << this <<  std::endl;
                         delete definicion;
                         for (int i = 0; i < 256; ++i){
                             delete siguientes[i];
@@ -118,8 +118,8 @@ DiccString<T>::DiccString()
 
 
 template <typename T>
-DiccString<T>::DiccString(const DiccString& d) {
-    if (d.raiz != NULL) raiz = new Nodo(*d.raiz);
+DiccString<T>::DiccString(const DiccString& d) : claves(d.claves) {
+    raiz = d.raiz != NULL ? new Nodo(*d.raiz) : NULL;
 }
 
 template <typename T>

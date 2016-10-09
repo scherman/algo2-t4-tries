@@ -12,6 +12,9 @@ void test_claves_dicc_vacio() {
 
 void test_constructor_copia() {
     DiccString<int> d;
+    DiccString<int> a (d);
+    ASSERT(a.Claves().cardinal() == 0);
+
     d.Definir("",15);
     d.Definir("casa",20);
     d.Definir("casita",25);
@@ -19,22 +22,23 @@ void test_constructor_copia() {
 
     DiccString<int> c (d);
 
-    ASSERT(d.Definido(""));
-    ASSERT(d.Obtener("") == 15);
+    ASSERT(c.Definido(""));
+    ASSERT(c.Obtener("") == 15);
 
-    ASSERT(d.Definido("casa"));
-    ASSERT(d.Obtener("casa") == 20);
+    ASSERT(c.Definido("casa"));
+    ASSERT(c.Obtener("casa") == 20);
 
-    ASSERT(d.Definido("casita"));
-    ASSERT(d.Obtener("casita") == 25);
+    ASSERT(c.Definido("casita"));
+    ASSERT(c.Obtener("casita") == 25);
 
-    ASSERT(d.Definido("casacha"));
-    ASSERT(d.Obtener("casacha") == 30);
+    ASSERT(c.Definido("casacha"));
+    ASSERT(c.Obtener("casacha") == 30);
 }
 
 //Chequea el definir y definido
 void test_definir_definido() {
 	DiccString<int> d;
+
 	d.Definir("hola",42);
 	ASSERT( d.Definido("hola") );
 	ASSERT( !d.Definido("casona") );
@@ -162,12 +166,12 @@ void test_claves() {
 
 
 int main() {
-	RUN_TEST(test_claves_dicc_vacio);
+//	RUN_TEST(test_claves_dicc_vacio);
     RUN_TEST(test_constructor_copia);
-	RUN_TEST(test_definir_definido);
-	RUN_TEST(test_obtener);
-	RUN_TEST(test_borrar);
-	RUN_TEST(test_claves);
+//	RUN_TEST(test_definir_definido);
+//	RUN_TEST(test_obtener);
+//	RUN_TEST(test_borrar);
+//	RUN_TEST(test_claves);
 	//Realizar más test para chequear el funcionamiento del diccionario sobre trie.
 
 	return 0;
