@@ -44,24 +44,28 @@ void test_definir_definido() {
 	ASSERT( !d.Definido("casona") );
  	ASSERT( !d.Definido("casa") );
     ASSERT( !d.Definido("h") );
+    ASSERT( !d.Definido("casonita") );
 
     d.Definir("h",14);
     ASSERT( d.Definido("hola") );
     ASSERT( d.Definido("h") );
     ASSERT( !d.Definido("casona") );
     ASSERT( !d.Definido("casa") );
+    ASSERT( !d.Definido("casonita") );
 
 	d.Definir("casona",13);
 	ASSERT( d.Definido("hola") );
     ASSERT( d.Definido("h") );
 	ASSERT( d.Definido("casona") );
   	ASSERT( !d.Definido("casa") );
+    ASSERT( !d.Definido("casonita") );
 
   	d.Definir("casa",6);
 	ASSERT( d.Definido("hola") );
     ASSERT( d.Definido("h") );
 	ASSERT( d.Definido("casona") );
   	ASSERT( d.Definido("casa") );
+    ASSERT( !d.Definido("casonita") );
 
     d.Definir("", 2);
     ASSERT( d.Definido("") );
@@ -69,6 +73,16 @@ void test_definir_definido() {
     ASSERT( d.Definido("h") );
     ASSERT( d.Definido("casona") );
     ASSERT( d.Definido("casa") );
+    ASSERT( !d.Definido("casonita") );
+
+    d.Definir("casonita", 250);
+    ASSERT( d.Definido("") );
+    ASSERT( d.Definido("hola") );
+    ASSERT( d.Definido("h") );
+    ASSERT( d.Definido("casona") );
+    ASSERT( d.Definido("casa") );
+    ASSERT( d.Definido("casonita") );
+
 }
 
 
@@ -99,31 +113,45 @@ void test_borrar() {
     d.Definir("",15);
     d.Definir("casa",20);
     d.Definir("casita",25);
+    d.Definir("casitita", 250);
     d.Definir("casacha",30);
+
+    d.Borrar("casitita");
+    ASSERT(d.Definido(""));
+    ASSERT(d.Definido("casa"));
+    ASSERT(d.Definido("casita"));
+    ASSERT(d.Definido("casacha"));
+    ASSERT(!d.Definido("casitita"));
+
+    d.Borrar("casita");
+    ASSERT(d.Definido(""));
+    ASSERT(d.Definido("casa"));
+    ASSERT(!d.Definido("casita"));
+    ASSERT(d.Definido("casacha"));
+    ASSERT(!d.Definido("casitita"));
+
+    d.Borrar("casacha");
+    ASSERT(d.Definido(""));
+    ASSERT(d.Definido("casa"));
+    ASSERT(!d.Definido("casita"));
+    ASSERT(!d.Definido("casacha"));
+    ASSERT(!d.Definido("casitita"));
 
     d.Borrar("casa");
 	ASSERT(d.Definido(""));
 	ASSERT(!d.Definido("casa"));
-	ASSERT(d.Definido("casita"));
-	ASSERT(d.Definido("casacha"));
-
-    d.Borrar("casita");
-    ASSERT(d.Definido(""));
-    ASSERT(!d.Definido("casa"));
-    ASSERT(!d.Definido("casita"));
-    ASSERT(d.Definido("casacha"));
+	ASSERT(!d.Definido("casita"));
+	ASSERT(!d.Definido("casacha"));
+    ASSERT(!d.Definido("casitita"));
 
     d.Borrar("");
     ASSERT(!d.Definido(""));
     ASSERT(!d.Definido("casa"));
     ASSERT(!d.Definido("casita"));
-    ASSERT(d.Definido("casacha"));
-
-    d.Borrar("casacha");
-    ASSERT(!d.Definido(""));
-    ASSERT(!d.Definido("casa"));
-    ASSERT(!d.Definido("casita"));
     ASSERT(!d.Definido("casacha"));
+    ASSERT(!d.Definido("casitita"));
+
+
 }
 
 void test_claves() {
@@ -166,12 +194,12 @@ void test_claves() {
 
 
 int main() {
-//	RUN_TEST(test_claves_dicc_vacio);
+	RUN_TEST(test_claves_dicc_vacio);
     RUN_TEST(test_constructor_copia);
-//	RUN_TEST(test_definir_definido);
-//	RUN_TEST(test_obtener);
-//	RUN_TEST(test_borrar);
-//	RUN_TEST(test_claves);
+	RUN_TEST(test_definir_definido);
+	RUN_TEST(test_obtener);
+	RUN_TEST(test_borrar);
+	RUN_TEST(test_claves);
 	//Realizar más test para chequear el funcionamiento del diccionario sobre trie.
 
 	return 0;

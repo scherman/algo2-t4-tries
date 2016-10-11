@@ -134,13 +134,9 @@ void DiccString<T>::Definir(const string& clave, const T& significado){
 
     // Recorro hasta que se bifurca
     Nodo* actual = raiz;
-    bool encontreBifurcacion = false;
     int i = 0;
-    while (i < clave.length() && !encontreBifurcacion) {
-        if (actual->siguientes[(int)clave[i]] == NULL) {
-            actual->siguientes[(int)clave[i]] = new Nodo();
-            encontreBifurcacion = true;
-        }
+    while (i < clave.length()) {
+        if (actual->siguientes[(int)clave[i]] == NULL) break;
         actual = actual->siguientes[(int)clave[i]];
         ++i;
     }
@@ -192,12 +188,12 @@ template <typename T>
 void DiccString<T>::Borrar(const string& clave) {
     if (raiz == NULL) return;
 
-    // Busco la ultima bifurcacion y su indice en la clave
+    // Busco la ultima bifurcacion/definicion y su indice en la clave
     Nodo *actual = raiz, *ultimaBifurcacion = raiz;
     int indiceBifurcacion = 0;
     for(int i = 0; i < clave.length(); ++i) {
         actual = actual->siguientes[(int)clave[i]];
-        if (cantSiguientes(*actual) > 1) {
+        if ( (cantSiguientes(*actual) > 1) || (actual->definicion != NULL) && (i != clave.length()-1)) {
             ultimaBifurcacion = actual;
             indiceBifurcacion = i;
         }
@@ -206,23 +202,27 @@ void DiccString<T>::Borrar(const string& clave) {
     // Elimino todos los nodos a partir de la ultima bifurcacion
     if (cantSiguientes(*actual) == 0) {
         // La clave a borrar no es un prefijo de otra clave
-        if (claves.cardinal() == 1) {
-            // Era la unica clave entonces borro a partir de la raiz
-            delete raiz;
-            raiz = NULL;
+        if (ultimaBifurcacion == raiz) {
+            if (claves.cardinal() == 1) {
+                // Era la unica clave entonces borro a partir de la raiz
+                delete raiz;
+                raiz = NULL;
+            } else {
+                // La raiz contiene una definicion. Dejo la raiz y borro lo demas
+                delete raiz->siguientes[(int)clave[0]];
+                raiz->siguientes[(int)clave[0]] = NULL;
+            }
         } else {
             // Borro a partir de la ultima bifurcacion
             delete ultimaBifurcacion->siguientes[(int)clave[indiceBifurcacion+1]];
             ultimaBifurcacion->siguientes[(int)clave[indiceBifurcacion+1]] = NULL;
         }
     } else {
-        // No tengo que borrar nodos. Solo borro la definicion
+        // La clave a borrar es prefijo de otra clave. Solo borro la definicion
         delete actual->definicion;
         actual->definicion = NULL;
     }
-
     claves.remover(clave);
-
 }
 
 template <typename T>
