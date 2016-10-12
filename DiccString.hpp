@@ -148,6 +148,7 @@ void DiccString<T>::Definir(const string& clave, const T& significado){
         actual->siguientes[(int)clave[n]] = nuevo;
         actual = nuevo;
     }
+    if (actual->definicion != NULL) delete actual->definicion;
     actual->definicion = new T(significado);
     claves.insertar(clave);
 }
