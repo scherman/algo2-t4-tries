@@ -91,6 +91,7 @@ void test_definir_definido() {
 void test_obtener() {
     DiccString<int> d;
     d.Definir("",15);
+    d.Definir("casa",12);
     d.Definir("casa",20);
     d.Definir("casita",25);
     d.Definir("casacha",30);
@@ -154,14 +155,6 @@ void test_borrar() {
 
 }
 
-
-void test_joaco() {
-    DiccString<int> d;
-    d.Definir("casa",15);
-    d.Definir("c",12);
-    d.Borrar("c");
-}
-
 void test_claves() {
     DiccString<int> d;
     d.Definir("",15);
@@ -208,8 +201,6 @@ int main() {
 	RUN_TEST(test_obtener);
 	RUN_TEST(test_borrar);
 	RUN_TEST(test_claves);
-	RUN_TEST(test_joaco);
-	//Realizar más test para chequear el funcionamiento del diccionario sobre trie.
 
 	return 0;
 
